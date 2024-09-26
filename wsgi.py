@@ -3,10 +3,11 @@ from flask import Flask
 from flask.cli import with_appcontext, AppGroup
 
 from App.database import db, get_migrate
-from App.main import create_app
+from App.main import create_app, parse_students, parse_reviews
 from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize)
 from App.controllers.student import (get_all_students_json, get_all_students)
-from App.controllers.staff import (add_student, login_staff, search_student_by_name)
+from App.controllers.reviews import (get_all_reviews, get_all_reviews_json)
+from App.controllers.staff import (add_student, login_staff, search_student_by_student_id, add_review)
 from App.controllers.admin import create_staff
 
 app = create_app()
@@ -16,7 +17,17 @@ migrate = get_migrate(app)
 @app.cli.command("init", help="Creates and initializes the database")
 def init():
     initialize()
+    parse_reviews()
     print('database intialized')
+
+@app.cli.command("list_reviews", help="List all student reviews")
+@click.argument("format", default="string")
+def list_review_command(format):
+    if format == 'string':
+        print(get_all_reviews_json())
+    else:
+        print(get_all_reviews())
+   
 
 '''
 User Commands
@@ -92,7 +103,7 @@ def login_staff_command(email, password):
     login_staff(email, password)
 
 # STAFF ADD STUDENT
-@staff_cli.command("add_student", help="Adds a student account")
+@staff_cli.command("add_student", help="Adds a student record")
 @click.argument("firstname", default="Bobby")
 @click.argument("lastname", default="Butterbeard")
 @click.argument("email", default="bobby.butterbeard@mail.com")
@@ -100,7 +111,13 @@ def add_student_command(firstname, lastname, email):
     add_student(firstname, lastname, email)
     print(f"Student added!")
 
-# STAFF VIEW STUDENTS
+# STAFF ADD CSV OF STUDENTS
+@staff_cli.command("add_students", help="Adds multiple student records from a CSV")
+def add_students_command():
+    parse_students() # Call the parse_students function to process the CSV
+    print(f"All students added from CSV!")
+
+# STAFF VIEW ALL STUDENTS
 @staff_cli.command("view_students", help="Lists all students in the database")
 @click.argument("format", default="string")
 def list_user_command(format):
@@ -109,10 +126,18 @@ def list_user_command(format):
     else:
         print(get_all_students()())
 
-# STAFF SEARCH STUDENT
-@staff_cli.command("search_students", help="Searches for a specific student")
-@click.argument("firstname", default="bobby")
-def search_student_command(firstname):
-    search_student_by_name(firstname)
-    
+# STAFF SEARCH SPECIFIC STUDENT BY ID
+@staff_cli.command("search_student", help="Searches for a specific student")
+@click.argument("student_id", default="816034565")
+def search_student_command(student_id):
+    print(search_student_by_student_id(student_id))
+
+# STAFF REVIEW STUDENT
+@staff_cli.command("review", help="Add a review for a student")
+@click.argument("student_id")
+@click.argument("text", nargs=-1)  # Use nargs=-1 to accept multiple words as a single argument
+def review_student_command(student_id, text):
+    add_review(student_id, text)
+       
+
 app.cli.add_command(staff_cli)
