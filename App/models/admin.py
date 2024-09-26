@@ -3,7 +3,7 @@ from .staff import Staff
 from App.database import db
 
 class Admin(User):
-    contact = db.Column(db.String, nullable=False)
+    activity_log = db.Column(db.String, nullable=True)
 
     def __init__(self, email, password):
         super().__init__(email, password)
@@ -16,9 +16,3 @@ class Admin(User):
     # def manage_staff_list():
 
     # def manage_student_list():
-
-    def create_staff_account(self, email, password, department):
-        new_staff = Staff(email=email, password=password, department=department)
-        db.session.add(new_staff)
-        db.session.commit()
-        return new_staff

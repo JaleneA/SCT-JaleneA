@@ -3,25 +3,25 @@ from App.database import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    firstName = db.Column(db.String, nullable=False)
-    lastName = db.Column(db.String, nullable=False)
+    firstname = db.Column(db.String, nullable=False)
+    lastname = db.Column(db.String, nullable=False)
     email =  db.Column(db.String, nullable=False, unique=True)
     username = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String(120), nullable=False)
 
-    def __init__(self, email, firstName, lastName, password):
+    def __init__(self, email, firstname, lastname, password):
         self.email = email
-        self.firstName = firstName
-        self.lastName = lastName
-        self.username = f"{firstName.lower()}{lastName.lower()}"
+        self.firstname = firstname
+        self.lastname = lastname
+        self.username = f"{firstname.lower()}{lastname.lower()}"
         self.set_password(password)
 
     def get_json(self):
         return{
             'id': self.id,
             'username': self.username,
-            'firstName': self.firstName,
-            'lastName': self.lastName,
+            'firstname': self.firstname,
+            'lastname': self.lastname,
             'email': self.email
         }
 
