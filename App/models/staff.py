@@ -1,24 +1,38 @@
-from .user import User
+from werkzeug.security import check_password_hash, generate_password_hash
 from App.database import db
 
-class Staff(User):
+class staff(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     suffix = db.Column(db.String, nullable=False, default='')
     department = db.Column(db.String, nullable=False, default='Unassigned')
+    firstname = db.Column(db.String, nullable=False)
+    lastname = db.Column(db.String, nullable=False)
+    email =  db.Column(db.String, nullable=False, unique=True)
+    password = db.Column(db.String(120), nullable=False)
+    is_admin = db.Column(db.Boolean(False), nullable=False)
 
-    def __init__(self, suffix, email, firstname, lastname, password, department):
-        super().__init__(email, firstname, lastname, password)
+    def __init__(self, suffix, email, firstname, lastname, department, is_admin, password):
         self.suffix = suffix
+        self.email = email
+        self.firstname = firstname
+        self.lastname = lastname
         self.department = department
+        self.is_admin = is_admin
+        self.set_password(password)
 
     def get_json(self):
-        user_data = super().get_json()
-        user_data.update({'department': self.department})
-        user_data.update({'suffix': self.suffix})
-        return user_data
+        return{
+            'staff_id': self.id,
+            'staffname': self.staffname,
+            'firstname': self.firstname,
+            'lastname': self.lastname,
+            'email': self.email
+        }
 
-    @classmethod
-    def login(cls, email, password):
-        staff_member = cls.query.filter_by(email=email).first()
-        if staff_member and staff_member.check_password(password):
-            return staff_member
-        return None
+    def set_password(self, password):
+        """Create hashed password."""
+        self.password = generate_password_hash(password)
+    
+    def check_password(self, password):
+        """Check hashed password."""
+        return check_password_hash(self.password, password)

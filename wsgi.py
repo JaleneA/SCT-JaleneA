@@ -4,11 +4,9 @@ from flask.cli import with_appcontext, AppGroup
 
 from App.database import db, get_migrate
 from App.main import create_app, parse_students, parse_reviews
-from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize)
+from App.controllers import ( create_staff, get_all_staffs_json, get_all_staffs, initialize, add_student, search_student_by_student_id, add_review)
 from App.controllers.student import (get_all_students_json, get_all_students)
 from App.controllers.reviews import (get_all_reviews, get_all_reviews_json)
-from App.controllers.staff import (add_student, login_staff, search_student_by_student_id, add_review)
-from App.controllers.admin import create_staff
 
 app = create_app()
 migrate = get_migrate(app)
@@ -20,87 +18,34 @@ def init():
     parse_reviews()
     print('database intialized')
 
-@app.cli.command("list_reviews", help="List all student reviews")
-@click.argument("format", default="string")
-def list_review_command(format):
-    if format == 'string':
-        print(get_all_reviews_json())
-    else:
-        print(get_all_reviews())
-   
-
-'''
-User Commands
-'''
-
-user_cli = AppGroup('user', help='Admin object commands') 
-# eg : flask user <command>
-
-# CREATE ADMIN ACCOUNT
-@user_cli.command("create", help="Creates an admin account")
-@click.argument("email", default="rob@mail.com")
-@click.argument("firstname", default="rob")
-@click.argument("lastname", default="bob")
-@click.argument("password", default="robpass")
-def create_user_command(email, firstname, lastname, password):
-    create_user(email, firstname, lastname, password)
-    print(f'{firstname + " " + lastname} created!')
-
-# LIST ALL USERS IN DATABASE
-@user_cli.command("list", help="Lists all users in the database")
-@click.argument("format", default="string")
-def list_user_command(format):
-    if format == 'string':
-        print(get_all_users_json())
-    else:
-        print(get_all_users())
-
-app.cli.add_command(user_cli)
-
-'''
-Admin Commands
-'''
-
-admin_cli = AppGroup('admin', help='Admin object commands') 
-# eg : flask admin <command>
-
-@admin_cli.command("create_staff", help="Creates a staff account")
-@click.argument("suffix", default="Mr.")
-@click.argument("email", default="rob@mail.com")
-@click.argument("firstname", default="Rock")
-@click.argument("lastname", default="Hobber")
-@click.argument("department", default="Department of Computing and Information Technology")
-@click.argument("password", default="robpass")
-def create_staff_command(suffix, email, firstname, lastname, department, password):
-    create_staff(suffix, email, firstname, lastname, department, password)
-    print(f"Staff account created for {suffix} {lastname}!")
-
-# @admin_cli.command("create_staffs", help="Creates a staff account")
-# @click.argument("suffix", default="Mr.")
-# @click.argument("email", default="rob@mail.com")
-# @click.argument("firstname", default="Rock")
-# @click.argument("lastname", default="Hobber")
-# @click.argument("department", default="Department of Computing and Information Technology")
-# @click.argument("password", default="robpass")
-# def create_staff_command(suffix, email, firstname, lastname, department, password):
-#     create_staff(suffix, email, firstname, lastname, department, password)
-#     print(f"Staff accounts created!")
-
-app.cli.add_command(admin_cli)
-
 '''
 Staff Commands
 '''
 
-staff_cli = AppGroup('staff', help='Staff object commands') 
+staff_cli = AppGroup('staff', help='Admin object commands') 
 # eg : flask staff <command>
 
-# STAFF LOGIN
-@staff_cli.command("login", help="Logs into a staff account")
+# CREATE STAFF ACCOUNT
+@staff_cli.command("create", help="Creates an staff account")
+@click.argument("suffix", default="Mr.")
+@click.argument("firstname", default="Rob")
+@click.argument("lastname", default="Bob")
+@click.argument("department", default="DCIT")
 @click.argument("email", default="rob@mail.com")
+@click.argument("is_admin", default=False)
 @click.argument("password", default="robpass")
-def login_staff_command(email, password):
-    login_staff(email, password)
+def create_staff_command(suffix, firstname, lastname, email, department, is_admin, password):
+    create_staff(suffix, firstname, lastname, department, email, is_admin, password)
+    print(f'Staff Account for {suffix + " " + firstname + " " + lastname} Created!')
+
+# LIST ALL staffS IN DATABASE
+@staff_cli.command("list", help="Lists all staffs in the database")
+@click.argument("format", default="string")
+def list_staff_command(format):
+    if format == 'string':
+        print(get_all_staffs_json())
+    else:
+        print(get_all_staffs())
 
 # STAFF ADD STUDENT
 @staff_cli.command("add_student", help="Adds a student record")
@@ -120,7 +65,7 @@ def add_students_command():
 # STAFF VIEW ALL STUDENTS
 @staff_cli.command("view_students", help="Lists all students in the database")
 @click.argument("format", default="string")
-def list_user_command(format):
+def list_staff_command(format):
     if format == 'string':
         print(get_all_students_json())
     else:
@@ -138,6 +83,14 @@ def search_student_command(student_id):
 @click.argument("text", nargs=-1)  # Use nargs=-1 to accept multiple words as a single argument
 def review_student_command(student_id, text):
     add_review(student_id, text)
-       
+
+# LIST ALL STUDENT REVIEWS
+@staff_cli.command("list_reviews", help="List all student reviews")
+@click.argument("format", default="string")
+def list_review_command(format):
+    if format == 'string':
+        print(get_all_reviews_json())
+    else:
+        print(get_all_reviews())
 
 app.cli.add_command(staff_cli)

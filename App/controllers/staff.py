@@ -1,13 +1,37 @@
 from App.controllers.student import get_student
-from App.models import Staff, Student, Review
+from App.models import Student, Review
+from App.models import staff
 from App.database import db
 
-def login_staff(email, password):
-    staff_member = Staff.login(email, password)
-    if staff_member:
-        print(f"Welcome, {staff_member.suffix} {staff_member.lastname}!")
-    else:
-        print("Login failed. Please check your email and password.")
+def create_staff(suffix, email, firstname, lastname, department, is_admin, password):
+    newstaff = staff(suffix=suffix, email=email, firstname=firstname, lastname=lastname, department=department, is_admin=is_admin, password=password)
+    db.session.add(newstaff)
+    db.session.commit()
+    return newstaff
+
+def get_staff_by_staffname(staffname):
+    return staff.query.filter_by(staffname=staffname).first()
+
+def get_staff(id):
+    return staff.query.get(id)
+
+def get_all_staffs():
+    return staff.query.all()
+
+def get_all_staffs_json():
+    staffs = staff.query.all()
+    if not staffs:
+        return []
+    staffs = [staff.get_json() for staff in staffs]
+    return staffs
+
+def update_staff(id, staffname):
+    staff = get_staff(id)
+    if staff:
+        staff.staffname = staffname
+        db.session.add(staff)
+        return db.session.commit()
+    return None
 
 def add_student (student_id, firstname, lastname, email):
     new_student = Student(student_id, firstname=firstname, lastname=lastname, email=email)
