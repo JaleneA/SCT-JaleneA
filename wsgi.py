@@ -94,23 +94,27 @@ def add_students_command():
 
 # REQUIREMENT #2 - REVIEW STUDENT
 @staff_cli.command("review", help="Adds A Review To A Student")
-@click.argument("student_id")
-@click.argument("text", nargs=-1)  # Used nargs=-1 To Accept Multiple Words As A Single Argument :D
-@click.argument("reviewer_id")
+@click.argument("student_id", required=False)
+@click.argument("text", nargs=-1, required=False)  # Used nargs=-1 To Accept Multiple Words As A Single Argument :D
+@click.argument("reviewer_id", required=False)
 def review_student_command(student_id, text, reviewer_id):
     if student_id is None:
         student_id = input("Enter Student ID To Review: ")
-    if text is None:
+
+    if not text:
         text = input("Enter Review: ")
+    else:
+        text = " ".join(text)
+
     if reviewer_id is None:
         reviewer_id = input("Input Your Staff ID: ")
 
     review = add_review(student_id, text, reviewer_id)
+
     if review:
         print(f"Review Uploaded To Student With ID: {student_id} Successfully!")
     else:
         print(f"ERROR: Student With ID {student_id} Does Not Exist.")
-
 
 # REQUIREMENT #3 - VIEW STUDENT REVIEWS
 @staff_cli.command("list_student_reviews", help="List All Reviews For Specified Student")

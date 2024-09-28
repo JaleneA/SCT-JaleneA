@@ -69,9 +69,7 @@ def search_student_by_student_id(student_id):
     return get_student_record(student_id)
 
 def add_review(student_id, text, reviewer_id):
-    review_text = ' '.join(text)
-    student_review = Review(student_id=student_id, text=review_text, reviewer_id=reviewer_id)
+    student_review = Review(student_id=student_id, text=text, reviewer_id=reviewer_id)
     db.session.add(student_review)
     db.session.commit()
-
-        
+    return student_review

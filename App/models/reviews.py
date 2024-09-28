@@ -20,4 +20,4 @@ class Review(db.Model):
         }
 
     def __repr__(self):
-       return f"<Review: {self.text} | Reviewed By: {self.reviewer.suffix} {self.reviewer.firstname} {self.reviewer.lastname}>"
+       return f"\n<Review: {self.text} \n Written By: {self.reviewer.suffix} {self.reviewer.firstname} {self.reviewer.lastname}>\n"
