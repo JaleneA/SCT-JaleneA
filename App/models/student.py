@@ -7,11 +7,11 @@ class Student(db.Model):
     email =  db.Column(db.String, nullable=False, unique=True)
     reviews = db.relationship('Review', backref='student', lazy=True)
 
-    def __init__(self, student_id, email, firstname, lastname):
+    def __init__(self, student_id, firstname, lastname, email):
         self.student_id = student_id
-        self.email = email
         self.firstname = firstname
         self.lastname = lastname
+        self.email = email
 
     def get_json(self):
         return{
@@ -19,5 +19,8 @@ class Student(db.Model):
             'firstname': self.firstname,
             'lastname': self.lastname,
             'email': self.email,
-            'reviews': [review.text for review in self.reviews]
+            'reviews': [review.text for review in self.reviews],
         }
+
+    def __repr__(self):
+        return f"<Student: {self.student_id} | {self.firstname} {self.lastname} | {self.email} | {[review.text for review in self.reviews]}>"

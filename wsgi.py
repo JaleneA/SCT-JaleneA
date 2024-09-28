@@ -5,18 +5,58 @@ from flask.cli import with_appcontext, AppGroup
 from App.database import db, get_migrate
 from App.main import create_app, parse_students, parse_reviews
 from App.controllers import ( create_staff, get_all_staffs_json, get_all_staffs, initialize, add_student, search_student_by_student_id, add_review)
-from App.controllers.student import (get_all_students_json, get_all_students)
-from App.controllers.reviews import (get_all_reviews, get_all_reviews_json)
+from App.controllers.student import (get_all_students_json, get_all_students, get_student, get_student_reviews, get_student_reviews_json)
 
 app = create_app()
 migrate = get_migrate(app)
 
-# This command creates and initializes the database
-@app.cli.command("init", help="Creates and initializes the database")
+# This Command Creates & Initializes The Database
+@app.cli.command("init", help="Creates & Initializes The Database")
 def init():
     initialize()
     parse_reviews()
-    print('database intialized')
+    print('Database Intialized!')
+
+'''
+Admin Commands
+'''
+
+admin_cli = AppGroup('admin', help='Admin Object Commands') 
+# eg : flask admin <command>
+
+# EXTRA #1 - CREATE STAFF ACCOUNT
+@admin_cli.command("create_staff", help="Creates A Staff Account")
+@click.argument("suffix", required=False)
+@click.argument("firstname", required=False)
+@click.argument("lastname", required=False)
+@click.argument("email", required=False)
+@click.argument("is_admin_input", required=False)
+@click.argument("password", required=False)
+@click.argument("created_by_id", required=False)
+def create_staff_command(suffix, firstname, lastname, email, is_admin_input, password, created_by_id):
+    if suffix is None:
+        suffix = input("Enter Staff Suffix: ")
+    if firstname is None:
+        firstname = input("Enter Staff First Name: ")
+    if lastname is None:
+        lastname = input("Enter Staff Last Name: ")
+    if email is None:
+        email = input("Enter Staff Email: ")
+    if is_admin_input is None:
+        is_admin_input = input("Is This Staff An Admin? (Y/N): ")
+    is_admin = True if is_admin_input.lower() == 'Y' else False
+    if password is None:
+        password = input("Enter Staff Password: ")
+    if created_by_id is None:
+        created_by_id = input("Enter Your Admin ID: ")
+    
+    new_staff = create_staff(suffix, firstname, lastname, email, is_admin, password, created_by_id)
+    if new_staff:
+        print(f'Staff Account for {suffix + " " + firstname + " " + lastname} Created!')
+    else:
+        print("Error: Creator does not exist or is not an admin.")
+
+app.cli.add_command(admin_cli)
 
 '''
 Staff Commands
@@ -25,72 +65,91 @@ Staff Commands
 staff_cli = AppGroup('staff', help='Admin object commands') 
 # eg : flask staff <command>
 
-# CREATE STAFF ACCOUNT
-@staff_cli.command("create", help="Creates an staff account")
-@click.argument("suffix", default="Mr.")
-@click.argument("firstname", default="Rob")
-@click.argument("lastname", default="Bob")
-@click.argument("department", default="DCIT")
-@click.argument("email", default="rob@mail.com")
-@click.argument("is_admin", default=False)
-@click.argument("password", default="robpass")
-def create_staff_command(suffix, firstname, lastname, email, department, is_admin, password):
-    create_staff(suffix, firstname, lastname, department, email, is_admin, password)
-    print(f'Staff Account for {suffix + " " + firstname + " " + lastname} Created!')
-
-# LIST ALL staffS IN DATABASE
-@staff_cli.command("list", help="Lists all staffs in the database")
-@click.argument("format", default="string")
-def list_staff_command(format):
-    if format == 'string':
-        print(get_all_staffs_json())
-    else:
-        print(get_all_staffs())
-
-# STAFF ADD STUDENT
+# REQUIREMENT #1 - ADD STUDENT
 @staff_cli.command("add_student", help="Adds a student record")
-@click.argument("firstname", default="Bobby")
-@click.argument("lastname", default="Butterbeard")
-@click.argument("email", default="bobby.butterbeard@mail.com")
-def add_student_command(firstname, lastname, email):
-    add_student(firstname, lastname, email)
-    print(f"Student added!")
+@click.argument("student_id", required=False)
+@click.argument("firstname", required=False)
+@click.argument("lastname", required=False)
+@click.argument("email", required=False)
+def add_student_command(student_id, firstname, lastname, email):
+    if student_id is None:
+        student_id = input("Enter Student ID: ")
+    if firstname is None:
+        firstname = input("Enter Student First Name: ")
+    if lastname is None:
+        lastname = input("Enter Lastname Last Name: ")
+    if email is None:
+        email = input("Enter Student Email: ")
+    new_student = add_student(student_id, firstname, lastname, email)
+    if new_student:
+        print(f"A Record Has Been Made For Student: {firstname + ' ' + lastname} Successfully!")
+    else:
+        print(f"ERROR: A Student With That ID Already Exists In The Database!")
 
-# STAFF ADD CSV OF STUDENTS
-@staff_cli.command("add_students", help="Adds multiple student records from a CSV")
+# EXTENDS-REQUIREMENT #1 - ADD CSV OF STUDENTS - For Convenience
+@staff_cli.command("add_students", help="Adds Multiple Students Via CSV")
 def add_students_command():
-    parse_students() # Call the parse_students function to process the CSV
-    print(f"All students added from CSV!")
+    parse_students()
+    print(f"All Students Added From CSV Successfully!")
 
-# STAFF VIEW ALL STUDENTS
-@staff_cli.command("view_students", help="Lists all students in the database")
+# REQUIREMENT #2 - REVIEW STUDENT
+@staff_cli.command("review", help="Adds A Review To A Student")
+@click.argument("student_id")
+@click.argument("text", nargs=-1)  # Used nargs=-1 To Accept Multiple Words As A Single Argument :D
+@click.argument("reviewer_id")
+def review_student_command(student_id, text, reviewer_id):
+    if student_id is None:
+        student_id = input("Enter Student ID To Review: ")
+    if text is None:
+        text = input("Enter Review: ")
+    if reviewer_id is None:
+        reviewer_id = input("Input Your Staff ID: ")
+
+    review = add_review(student_id, text, reviewer_id)
+    if review:
+        print(f"Review Uploaded To Student With ID: {student_id} Successfully!")
+    else:
+        print(f"ERROR: Student With ID {student_id} Does Not Exist.")
+
+
+# REQUIREMENT #3 - VIEW STUDENT REVIEWS
+@staff_cli.command("list_student_reviews", help="List All Reviews For Specified Student")
+@click.argument("student_id", default="816032484")
+@click.argument("format", default="string")
+def list_review_command(student_id, format):
+    reviews = get_student_reviews(student_id)
+    if reviews and format == "string":
+        print(get_student_reviews(student_id))
+    elif not reviews:
+        print(f"ERROR: Student With ID {student_id} Does Not Exist.")
+    else:
+        print(get_student_reviews_json(student_id))
+
+# REQUIREMENT #4 - SEARCH STUDENT
+@staff_cli.command("search_student", help="Searches For Specific Student")
+@click.argument("student_id", default="816032484")
+def search_student_command(student_id):
+    if get_student(student_id):
+        print(search_student_by_student_id(student_id))
+    else:
+        print(f"ERROR: Student With ID {student_id} Does Not Exist.")
+
+# EXTRA #2 - LIST ALL STAFF ACCOUNTS IN DATABASE
+@staff_cli.command("list", help="Lists All Staff Account In The Database")
 @click.argument("format", default="string")
 def list_staff_command(format):
     if format == 'string':
-        print(get_all_students_json())
+        print(get_all_staffs())
     else:
-        print(get_all_students()())
+        print(get_all_staffs_json())
 
-# STAFF SEARCH SPECIFIC STUDENT BY ID
-@staff_cli.command("search_student", help="Searches for a specific student")
-@click.argument("student_id", default="816034565")
-def search_student_command(student_id):
-    print(search_student_by_student_id(student_id))
-
-# STAFF REVIEW STUDENT
-@staff_cli.command("review", help="Add a review for a student")
-@click.argument("student_id")
-@click.argument("text", nargs=-1)  # Use nargs=-1 to accept multiple words as a single argument
-def review_student_command(student_id, text):
-    add_review(student_id, text)
-
-# LIST ALL STUDENT REVIEWS
-@staff_cli.command("list_reviews", help="List all student reviews")
+# EXTRA #3 - VIEW ALL STUDENTS
+@staff_cli.command("view_students", help="Lists All Student Records In The Database")
 @click.argument("format", default="string")
-def list_review_command(format):
+def list_staff_command(format):
     if format == 'string':
-        print(get_all_reviews_json())
+        print(get_all_students())
     else:
-        print(get_all_reviews())
+        print(get_all_students_json())
 
 app.cli.add_command(staff_cli)

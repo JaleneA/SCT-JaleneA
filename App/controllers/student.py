@@ -11,9 +11,23 @@ def get_all_students_json():
     students = [student.get_json() for student in students]
     return students
 
-def get_student(student_id):
+def get_student_record(student_id):
     student = Student.query.get(student_id)
-    if student:
-        return student.get_json()
-    else:
-        return {"error": "Student not found."}
+    return student.get_json()
+
+def get_student(student_id):
+    return Student.query.get(student_id)
+
+def get_student_reviews(student_id):
+    student = Student.query.get(student_id)
+    if not student:
+        return None
+    reviews = [review for review in student.reviews]
+    return reviews
+
+def get_student_reviews_json(student_id):
+    student = Student.query.get(student_id)
+    if not student:
+        return None
+    reviews = [review.get_json() for review in student.reviews]
+    return reviews

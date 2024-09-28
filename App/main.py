@@ -1,6 +1,5 @@
 import os, csv
 from flask import Flask, render_template
-# from flask_uploads import DOCUMENTS, IMAGES, TEXT, UploadSet, configure_uploads
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
@@ -29,10 +28,11 @@ def parse_students():
   db.session.commit()
 
 def parse_reviews():
-  with open('App/reviews.csv') as csvfile:
+  with open('App/reviews.csv', encoding='unicode_escape') as csvfile:
     reader = csv.DictReader(csvfile, delimiter=';')
     for row in reader:
       review = Review(text=row['text'],
-                      student_id=int(row['student_id']))
+                      student_id=int(row['student_id']),
+                      reviewer_id=int(row['reviewer_id']))
       db.session.add(review)
     db.session.commit()
