@@ -46,7 +46,7 @@ def create_staff_command(suffix, firstname, lastname, email, is_admin_input, pas
         is_admin_input = input("Is This Staff An Admin? (Y/N): ")
     is_admin = True if is_admin_input.lower() == 'Y' else False
     if password is None:
-        password = input("Enter Staff Password: ")
+        password = input("Enter Staff Default Password: ")
     if created_by_id is None:
         created_by_id = input("Enter Your Admin ID: ")
     
@@ -123,15 +123,16 @@ def review_student_command(student_id, text, reviewer_id):
         reviewer_id = input("Input Your Staff ID: ")
 
     review = add_review(student_id, text, reviewer_id)
+    student = get_student(student_id)
 
-    if review:
-        print(f"Review Uploaded To Student With ID: {student_id} Successfully!")
+    if review and student:
+        print(f"Review Uploaded To Student With ID: {student_id} ({student.firstname} {student.lastname}) Successfully!")
     else:
         print(f"ERROR: Student With ID {student_id} Does Not Exist.")
 
 # REQUIREMENT #3 - VIEW STUDENT REVIEWS
 @staff_cli.command("view_student_reviews", help="List All Reviews For Specified Student")
-@click.argument("student_id", default="816032484")
+@click.argument("student_id")
 @click.argument("format", default="string")
 def list_review_command(student_id, format):
     reviews = get_student_reviews(student_id)
