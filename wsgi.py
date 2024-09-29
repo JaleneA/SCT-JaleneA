@@ -52,21 +52,31 @@ def create_staff_command(suffix, firstname, lastname, email, is_admin_input, pas
     
     new_staff = create_staff(suffix, firstname, lastname, email, is_admin, password, created_by_id)
     if new_staff:
-        print(f'Staff Account for {suffix + " " + firstname + " " + lastname} Created!')
+        print(f'Staff Account For {suffix + " " + firstname + " " + lastname} Created!')
     else:
-        print("Error: Creator does not exist or is not an admin.")
+        print("ERROR: Unauthorized Access.")
 
 app.cli.add_command(admin_cli)
+
+# EXTRA #2 - LIST ALL STAFF ACCOUNTS IN DATABASE
+@admin_cli.command("list_staff", help="Lists All Staff Account In The Database")
+@click.argument("format", default="string")
+def list_staff_command(format):
+    if format == 'string':
+        print(get_all_staffs())
+    else:
+        print(get_all_staffs_json())
+
 
 '''
 Staff Commands
 '''
 
-staff_cli = AppGroup('staff', help='Admin object commands') 
+staff_cli = AppGroup('staff', help='Admin Object Commands') 
 # eg : flask staff <command>
 
 # REQUIREMENT #1 - ADD STUDENT
-@staff_cli.command("add_student", help="Adds a student record")
+@staff_cli.command("add_student", help="Adds A Student Record")
 @click.argument("student_id", required=False)
 @click.argument("firstname", required=False)
 @click.argument("lastname", required=False)
@@ -86,10 +96,13 @@ def add_student_command(student_id, firstname, lastname, email):
     else:
         print(f"ERROR: A Student With That ID Already Exists In The Database!")
 
-# EXTENDS-REQUIREMENT #1 - ADD CSV OF STUDENTS - For Convenience
+# REQUIREMENT #1 EXTENSION - IMPORT CSV OF STUDENTS - For Convenience
 @staff_cli.command("add_students", help="Adds Multiple Students Via CSV")
-def add_students_command():
-    parse_students()
+@click.argument("filepath", required=False)
+def add_students_command(filepath):
+    if filepath is None:
+        filepath = input("Enter Filepath: ")
+    parse_students(filepath)
     print(f"All Students Added From CSV Successfully!")
 
 # REQUIREMENT #2 - REVIEW STUDENT
@@ -117,7 +130,7 @@ def review_student_command(student_id, text, reviewer_id):
         print(f"ERROR: Student With ID {student_id} Does Not Exist.")
 
 # REQUIREMENT #3 - VIEW STUDENT REVIEWS
-@staff_cli.command("list_student_reviews", help="List All Reviews For Specified Student")
+@staff_cli.command("view_student_reviews", help="List All Reviews For Specified Student")
 @click.argument("student_id", default="816032484")
 @click.argument("format", default="string")
 def list_review_command(student_id, format):
@@ -138,17 +151,8 @@ def search_student_command(student_id):
     else:
         print(f"ERROR: Student With ID {student_id} Does Not Exist.")
 
-# EXTRA #2 - LIST ALL STAFF ACCOUNTS IN DATABASE
-@staff_cli.command("list", help="Lists All Staff Account In The Database")
-@click.argument("format", default="string")
-def list_staff_command(format):
-    if format == 'string':
-        print(get_all_staffs())
-    else:
-        print(get_all_staffs_json())
-
-# EXTRA #3 - VIEW ALL STUDENTS
-@staff_cli.command("view_students", help="Lists All Student Records In The Database")
+# EXTRA #3 - LIST ALL STUDENTS
+@staff_cli.command("list_student", help="Lists All Student Records In The Database")
 @click.argument("format", default="string")
 def list_staff_command(format):
     if format == 'string':
