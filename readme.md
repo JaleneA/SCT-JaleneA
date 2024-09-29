@@ -72,7 +72,7 @@ $ flask staff search_student 816031000
 ```bash
 $ flask staff list_student
 ```
-![Screenshot12](./img/liststudent.png)
+![Screenshot12](./img/liststudents.png)
 
 ## Dependencies
 * Python3/pip3
