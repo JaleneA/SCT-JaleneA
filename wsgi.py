@@ -92,7 +92,7 @@ def add_student_command(student_id, firstname, lastname, email):
         email = input("Enter Student Email: ")
     new_student = add_student(student_id, firstname, lastname, email)
     if new_student:
-        print(f"A Record Has Been Made For Student: {firstname + ' ' + lastname} Successfully!")
+        print(f"A Record Has Been Made For Student: {firstname + ' ' + lastname}.")
     else:
         print(f"ERROR: A Student With That ID Already Exists In The Database!")
 
