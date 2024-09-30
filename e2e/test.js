@@ -21,7 +21,7 @@ before(async function(){
     request.continue();
   });
 
-  await page.goto(`${host}/static/users`, { waitUntil: 'networkidle2'});
+  await page.goto(`${host}/static/staffs`, { waitUntil: 'networkidle2'});
 });
 
 function getHTML(selector){
@@ -44,10 +44,10 @@ function checkElements(a) {
   })
 }
 
-context('The /static/users page', ()=>{
+context('The /static/staffs page', ()=>{
 
-  it('Test 1: Should send a http request to /api/users', async ()=>{
-    let reqs = [`${host}/api/users`];
+  it('Test 1: Should send a http request to /api/staffs', async ()=>{
+    let reqs = [`${host}/api/staffs`];
     let count = 0;
 
     reqs.forEach(req => {
@@ -58,13 +58,13 @@ context('The /static/users page', ()=>{
 
   }).timeout(2000);
 
-  it("Test 2: Page should have App Users as the title", async () => {
-      expect(await page.title()).to.eql("App Users")
+  it("Test 2: Page should have App staffs as the title", async () => {
+      expect(await page.title()).to.eql("App staffs")
   });
 
   //hello im on nick branch
 
-  describe("Test 3: Page should have a users table header", () => {
+  describe("Test 3: Page should have a staffs table header", () => {
     it("First table header should be 'Id'", async () => {
       const html = await page.$eval('tr>th:nth-child(1)', (e) => e.innerHTML);
       expect(html).to.eql("Id")
@@ -82,7 +82,7 @@ context('The /static/users page', ()=>{
 
   })
 
-  // it('Test 2: Should user table header on page', async ()=>{
+  // it('Test 2: Should staff table header on page', async ()=>{
   //   await page.waitForSelector('#pokemon-detail')
 
   //   let searchKeys = [ 'grass', '1', '6.9', '0.7' ]

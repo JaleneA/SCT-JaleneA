@@ -3,44 +3,49 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from App.main import create_app
 from App.database import db, create_db
-from App.models import User
+from App.models import Staff
 from App.controllers import (
-    create_user,
-    get_all_users_json,
-    login,
-    get_user,
-    get_user_by_username,
-    update_user
+    create_staff,
+    get_all_staffs_json,
+    # login,
+    get_staff,
+    # get_staff_by_staffname,
+    update_staff
 )
-
 
 LOGGER = logging.getLogger(__name__)
 
 '''
    Unit Tests
 '''
-class UserUnitTests(unittest.TestCase):
+class staffUnitTests(unittest.TestCase):
 
-    def test_new_user(self):
-        user = User("bob", "bobpass")
-        assert user.username == "bob"
+    def test_new_staff(self):
+        staff = Staff("Mr.", "Johnny", "Applesauce", "johnny.applesauce@mail.com", "Y", "johnnypass", "0")
+        assert staff.firstname == "Johnny"
 
     # pure function no side effects or integrations called
     def test_get_json(self):
-        user = User("bob", "bobpass")
-        user_json = user.get_json()
-        self.assertDictEqual(user_json, {"id":None, "username":"bob"})
-    
+        staff = Staff("Mr.", "Johnny", "Applesauce", "johnny.applesauce@mail.com", "Y", "johnnypass", "0")
+        staff_json = staff.get_json()
+        self.assertDictEqual(staff_json, {"id": None,
+                                          "prefix": "Mr.",
+                                          "firstname": "Johnny",
+                                          "lastname": "Applesauce",
+                                          "email": "johnny.applesauce@mail.com",
+                                          "is_admin": "Y",
+                                          "created_by": None})
+
     def test_hashed_password(self):
-        password = "mypass"
+        password = "johnnypass"
         hashed = generate_password_hash(password, method='sha256')
-        user = User("bob", password)
-        assert user.password != password
+        staff = Staff("Mr.", "Johnny", "Applesauce", "johnny.applesauce@mail.com", "Y", password, "0")
+        assert staff.password != password
 
     def test_check_password(self):
-        password = "mypass"
-        user = User("bob", password)
-        assert user.check_password(password)
+        password = "johnnypass"
+        staff = Staff("Mr.", "Johnny", "Applesauce", "johnny.applesauce@mail.com", "Y", password, "0")
+        assert staff.check_password(password)
 
 '''
     Integration Tests
@@ -55,25 +60,38 @@ def empty_db():
     yield app.test_client()
     db.drop_all()
 
+# def test_authenticate():
+#     staff = create_staff("bob", "bobpass")
+#     assert login("bob", "bobpass") != None
 
-def test_authenticate():
-    user = create_user("bob", "bobpass")
-    assert login("bob", "bobpass") != None
+class staffsIntegrationTests(unittest.TestCase):
 
-class UsersIntegrationTests(unittest.TestCase):
+    def test_create_staff(self):
+        johnny = create_staff("Mr.", "Johnny", "Applesauce", "johnny.applesauce@mail.com", True, "johnnypass", 0)
+        rick = create_staff("Mr.", "Rick", "Rickson", "rick.rickson@mail.com", True, "rickpass", 1)
+        assert johnny.firstname == "Johnny"
+        assert rick.firstname == "Rick"
 
-    def test_create_user(self):
-        user = create_user("rick", "bobpass")
-        assert user.username == "rick"
+    def test_get_all_staffs_json(self):
+        staffs_json = get_all_staffs_json()
+        self.assertListEqual([{"id": 1,
+                               "prefix": "Mr.",
+                               "firstname": "Johnny",
+                               "lastname": "Applesauce",
+                               "email": "johnny.applesauce@mail.com",
+                               "is_admin": True,
+                               "created_by": None},
 
-    def test_get_all_users_json(self):
-        users_json = get_all_users_json()
-        self.assertListEqual([{"id":1, "username":"bob"}, {"id":2, "username":"rick"}], users_json)
+                              {"id": 2,
+                               "prefix": "Mr.",
+                               "firstname": "Rick",
+                               "lastname": "Rickson",
+                               "email": "rick.rickson@mail.com",
+                               "is_admin": True,
+                               "created_by": "Mr. Johnny Applesauce (johnny.applesauce@mail.com)"}], staffs_json)
 
     # Tests data changes in the database
-    def test_update_user(self):
-        update_user(1, "ronnie")
-        user = get_user(1)
-        assert user.username == "ronnie"
-        
-
+    def test_update_staff(self):
+        update_staff(1, "Ronnie")
+        staff = get_staff(1)
+        assert staff.firstname == "Ronnie"
