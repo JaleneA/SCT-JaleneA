@@ -67,7 +67,6 @@ def list_staff_command(format):
     else:
         print(get_all_staffs_json())
 
-
 '''
 Staff Commands
 '''
