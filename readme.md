@@ -24,8 +24,8 @@ $ pip install -r requirements.txt
 ```
 
 
-## Flask MVC Template
-A template for flask applications structured in the Model View Controller pattern
+## Flask MVC
+This flask application is structured using the Model View Controller pattern
 
 
 ## Initializing the Database
@@ -130,15 +130,38 @@ $ flask staff list_students
 # Testing
 
 ## Unit & Integration
-Unit and Integration tests are created in the App/test.
+A few (7) Unit and Integration tests are created in the App/test.
 You can then execute all user tests as follows:
 
 ```bash
 $ flask test staff
 ```
 
+![Screenshot13](./img/test.png)
+
 or run all application tests with the following command:
 
 ```bash
 $ pytest
 ```
+
+# Error Handling
+✓ Another Staff With The Same Email Cannot Be Created
+✓ Only Admins Can Create Staff Accounts
+✓ Existing Students Import Via CSV Will Be Ignored Upon Later Imports of The Same CSV (With Newly Added Data)
+✓ Cannot Create Another Student With An Already Existing Student ID
+✓ Cannot Review a Student That Doesn't Exist
+✓ Cannot Search a Student That Doesn't Exist
+
+
+<details>
+<summary>Snippets</summary>
+
+![Screenshot13](./img/errorhandle1.png)
+![Screenshot14](./img/errorhandle2.png)
+![Screenshot15](./img/errorhandle3.png)
+![Screenshot16](./img/errorhandle4.png)
+![Screenshot17](./img/errorhandle5.png)
+![Screenshot18](./img/errorhandle6.png)
+
+</details>

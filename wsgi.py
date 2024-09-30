@@ -54,14 +54,14 @@ def create_staff_command(prefix, firstname, lastname, email, is_admin_input, pas
     existing_staff = Staff.query.filter_by(email=email).first()
 
     if existing_staff:
-        print("ERROR: A staff already exists with that email.")
+        print("ERROR: A Staff Already Exists With That Email.")
         return
 
     new_staff = create_staff(prefix, firstname, lastname, email, is_admin, password, created_by_id)
     if new_staff:
         print(f'Staff Account For {prefix + " " + firstname + " " + lastname} Created!')
     else:
-        print("ERROR: Unauthorized Access.")
+        print("ERROR: Unauthorized - Admins Only.")
 
 app.cli.add_command(admin_cli)
 
@@ -101,7 +101,7 @@ def add_student_command(student_id, firstname, lastname, email):
         print(f"A Record Has Been Made For Student: {firstname + ' ' + lastname}.")
     else:
         print(f"ERROR: A Student With That ID Already Exists In The Database!")
-
+ 
 # REQUIREMENT #1 EXTENSION - IMPORT CSV OF STUDENTS - For Convenience
 @staff_cli.command("add_students", help="Adds Multiple Students Via CSV")
 @click.argument("filepath", required=False)

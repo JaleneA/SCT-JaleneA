@@ -33,7 +33,7 @@ class Staff(db.Model):
         }
 
     def __repr__(self):
-        return f"<Staff: {self.prefix} {self.firstname} {self.lastname} | {self.email} | Admin? {self.is_admin}>"
+        return f"<Staff: {self.id} | {self.prefix} {self.firstname} {self.lastname} | {self.email} | Admin? {self.is_admin}>"
 
     def set_password(self, password):
         """Create hashed password."""
