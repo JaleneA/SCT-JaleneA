@@ -3,14 +3,14 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from App.main import create_app
 from App.database import db, create_db
-from App.models import User
+from App.models import staff
 from App.controllers import (
-    create_user,
-    get_all_users_json,
+    create_staff,
+    get_all_staffs_json,
     login,
-    get_user,
-    get_user_by_username,
-    update_user
+    get_staff,
+    get_staff_by_staffname,
+    update_staff
 )
 
 
@@ -19,28 +19,28 @@ LOGGER = logging.getLogger(__name__)
 '''
    Unit Tests
 '''
-class UserUnitTests(unittest.TestCase):
+class staffUnitTests(unittest.TestCase):
 
-    def test_new_user(self):
-        user = User("bob", "bobpass")
-        assert user.username == "bob"
+    def test_new_staff(self):
+        staff = staff("bob", "bobpass")
+        assert staff.staffname == "bob"
 
     # pure function no side effects or integrations called
     def test_get_json(self):
-        user = User("bob", "bobpass")
-        user_json = user.get_json()
-        self.assertDictEqual(user_json, {"id":None, "username":"bob"})
+        staff = staff("bob", "bobpass")
+        staff_json = staff.get_json()
+        self.assertDictEqual(staff_json, {"id":None, "staffname":"bob"})
     
     def test_hashed_password(self):
         password = "mypass"
         hashed = generate_password_hash(password, method='sha256')
-        user = User("bob", password)
-        assert user.password != password
+        staff = staff("bob", password)
+        assert staff.password != password
 
     def test_check_password(self):
         password = "mypass"
-        user = User("bob", password)
-        assert user.check_password(password)
+        staff = staff("bob", password)
+        assert staff.check_password(password)
 
 '''
     Integration Tests
@@ -57,23 +57,23 @@ def empty_db():
 
 
 def test_authenticate():
-    user = create_user("bob", "bobpass")
+    staff = create_staff("bob", "bobpass")
     assert login("bob", "bobpass") != None
 
-class UsersIntegrationTests(unittest.TestCase):
+class staffsIntegrationTests(unittest.TestCase):
 
-    def test_create_user(self):
-        user = create_user("rick", "bobpass")
-        assert user.username == "rick"
+    def test_create_staff(self):
+        staff = create_staff("rick", "bobpass")
+        assert staff.staffname == "rick"
 
-    def test_get_all_users_json(self):
-        users_json = get_all_users_json()
-        self.assertListEqual([{"id":1, "username":"bob"}, {"id":2, "username":"rick"}], users_json)
+    def test_get_all_staffs_json(self):
+        staffs_json = get_all_staffs_json()
+        self.assertListEqual([{"id":1, "staffname":"bob"}, {"id":2, "staffname":"rick"}], staffs_json)
 
     # Tests data changes in the database
-    def test_update_user(self):
-        update_user(1, "ronnie")
-        user = get_user(1)
-        assert user.username == "ronnie"
+    def test_update_staff(self):
+        update_staff(1, "ronnie")
+        staff = get_staff(1)
+        assert staff.staffname == "ronnie"
         
 
