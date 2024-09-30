@@ -29,7 +29,7 @@ This flask application is structured using the Model View Controller pattern
 
 
 ## Initializing the Database
-When connecting the project to a fresh empty database ensure the appropriate configuration is set then file then run the following command. This must also be executed once when running the app on heroku by opening the heroku console, executing bash and running the command in the dyno.
+When connecting the project to a fresh empty database ensure the appropriate configuration is set then file then run the following command.
 
 
 ```bash
