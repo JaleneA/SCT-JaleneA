@@ -22,9 +22,11 @@ def parse_students(filepath):
         reader = csv.DictReader(csvfile, delimiter=';')
         for row in reader:
             student_id = row['student_id']
-            existing_student = Student.query.filter_by(student_id=student_id).first()
+            email = row['email']
+            existing_student_id = Student.query.filter_by(student_id=student_id).first()
+            existing_student_email = Student.query.filter_by(email=email).first()
             
-            if not existing_student:
+            if not existing_student_id and not existing_student_email:
                 try:
                     student = Student(
                         student_id=row['student_id'],

@@ -26,16 +26,16 @@ admin_cli = AppGroup('admin', help='Admin Object Commands')
 
 # EXTRA #1 - CREATE STAFF ACCOUNT
 @admin_cli.command("create_staff", help="Creates A Staff Account")
-@click.argument("suffix", required=False)
+@click.argument("prefix", required=False)
 @click.argument("firstname", required=False)
 @click.argument("lastname", required=False)
 @click.argument("email", required=False)
 @click.argument("is_admin_input", required=False)
 @click.argument("password", required=False)
 @click.argument("created_by_id", required=False)
-def create_staff_command(suffix, firstname, lastname, email, is_admin_input, password, created_by_id):
-    if suffix is None:
-        suffix = input("Enter Staff Suffix: ")
+def create_staff_command(prefix, firstname, lastname, email, is_admin_input, password, created_by_id):
+    if prefix is None:
+        prefix = input("Enter Staff Prefix: ")
     if firstname is None:
         firstname = input("Enter Staff First Name: ")
     if lastname is None:
@@ -44,22 +44,22 @@ def create_staff_command(suffix, firstname, lastname, email, is_admin_input, pas
         email = input("Enter Staff Email: ")
     if is_admin_input is None:
         is_admin_input = input("Is This Staff An Admin? (Y/N): ")
-    is_admin = True if is_admin_input.lower() == 'Y' else False
+    is_admin = True if is_admin_input.lower() == 'y' else False
     if password is None:
         password = input("Enter Staff Default Password: ")
     if created_by_id is None:
         created_by_id = input("Enter Your Admin ID: ")
     
-    new_staff = create_staff(suffix, firstname, lastname, email, is_admin, password, created_by_id)
+    new_staff = create_staff(prefix, firstname, lastname, email, is_admin, password, created_by_id)
     if new_staff:
-        print(f'Staff Account For {suffix + " " + firstname + " " + lastname} Created!')
+        print(f'Staff Account For {prefix + " " + firstname + " " + lastname} Created!')
     else:
         print("ERROR: Unauthorized Access.")
 
 app.cli.add_command(admin_cli)
 
-# EXTRA #2 - LIST ALL STAFF ACCOUNTS IN DATABASE
-@admin_cli.command("list_staff", help="Lists All Staff Account In The Database")
+# EXTRA #2 - LIST ALL STAFF ACCOUNTS IN DATABASE 
+@admin_cli.command("list_staffs", help="Lists All Staff Account In The Database")
 @click.argument("format", default="string")
 def list_staff_command(format):
     if format == 'string':
@@ -152,7 +152,7 @@ def search_student_command(student_id):
         print(f"ERROR: Student With ID {student_id} Does Not Exist.")
 
 # EXTRA #3 - LIST ALL STUDENTS
-@staff_cli.command("list_student", help="Lists All Student Records In The Database")
+@staff_cli.command("list_students", help="Lists All Student Records In The Database")
 @click.argument("format", default="string")
 def list_staff_command(format):
     if format == 'string':
@@ -161,3 +161,21 @@ def list_staff_command(format):
         print(get_all_students_json())
 
 app.cli.add_command(staff_cli)
+
+'''
+Test Commands
+'''
+
+test = AppGroup('test', help='Testing Commands') 
+
+@test.command("staff", help="Run Staff tests")
+@click.argument("type", default="all")
+def user_tests_command(type):
+    if type == "unit":
+        sys.exit(pytest.main(["-k", "UserUnitTests"]))
+    elif type == "int":
+        sys.exit(pytest.main(["-k", "UserIntegrationTests"]))
+    else:
+        sys.exit(pytest.main(["-k", "App"]))
+
+app.cli.add_command(test)

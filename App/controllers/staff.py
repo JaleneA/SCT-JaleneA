@@ -3,11 +3,11 @@ from App.models import Student, Review
 from App.models import Staff
 from App.database import db
 
-def create_staff(suffix, firstname, lastname, email, is_admin, password, created_by_id):
-    created_by = get_staff(created_by_id)        
+def create_staff(prefix, firstname, lastname, email, is_admin, password, created_by_id):
+    created_by = get_staff(created_by_id)
 
     if created_by and created_by.is_admin:
-        newstaff = Staff(suffix=suffix,
+        newstaff = Staff(prefix=prefix,
                         firstname=firstname,
                         lastname=lastname,
                         email=email,
@@ -23,7 +23,7 @@ def create_staff(suffix, firstname, lastname, email, is_admin, password, created
         return None
 
     else:
-        newstaff = Staff(suffix=suffix, 
+        newstaff = Staff(prefix=prefix, 
                         email=email, 
                         firstname=firstname, 
                         lastname=lastname, 

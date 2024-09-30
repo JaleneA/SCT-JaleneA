@@ -16,8 +16,8 @@ class Review(db.Model):
         return{
             'student_id': self.student_id,
             'text': self.text,
-             'reviewer': f"{self.reviewer.suffix} {self.reviewer.firstname} {self.reviewer.lastname}"
+             'reviewer': f"{self.reviewer.prefix} {self.reviewer.firstname} {self.reviewer.lastname}"
         }
 
     def __repr__(self):
-       return f"\n<Review: {self.text} \n Written By: {self.reviewer.suffix} {self.reviewer.firstname} {self.reviewer.lastname}>\n"
+       return f"\n<Review: {self.text} \n Written By: {self.reviewer.prefix} {self.reviewer.firstname} {self.reviewer.lastname}>\n"

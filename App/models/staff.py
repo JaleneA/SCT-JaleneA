@@ -3,7 +3,7 @@ from App.database import db
 
 class Staff(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    suffix = db.Column(db.String, nullable=False)
+    prefix = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
     firstname = db.Column(db.String, nullable=False)
     lastname = db.Column(db.String, nullable=False)
@@ -12,8 +12,8 @@ class Staff(db.Model):
     created_by_id = db.Column(db.Integer, db.ForeignKey('staff.id'), nullable=True)
     created_by = db.relationship('Staff', remote_side=[id], backref='staff_added', lazy=True)
 
-    def __init__(self, suffix, email, firstname, lastname, is_admin, created_by_id, password):
-        self.suffix = suffix
+    def __init__(self, prefix, email, firstname, lastname, is_admin, created_by_id, password):
+        self.prefix = prefix
         self.email = email
         self.firstname = firstname
         self.lastname = lastname
@@ -24,16 +24,16 @@ class Staff(db.Model):
     def get_json(self):
         return{
             'staff_id': self.id,
-            'suffix': self.suffix,
+            'prefix': self.prefix,
             'firstname': self.firstname,
             'lastname': self.lastname,
             'email': self.email,
             'is_admin': self.is_admin,
-            'created_by': f"{self.created_by.suffix} {self.created_by.firstname} {self.created_by.lastname} ({self.created_by.email})" if self.created_by else None
+            'created_by': f"{self.created_by.prefix} {self.created_by.firstname} {self.created_by.lastname} ({self.created_by.email})" if self.created_by else None
         }
 
     def __repr__(self):
-        return f"<Staff: {self.suffix} {self.firstname} {self.lastname} | {self.email} | Admin? {self.is_admin}>"
+        return f"<Staff: {self.prefix} {self.firstname} {self.lastname} | {self.email} | Admin? {self.is_admin}>"
 
     def set_password(self, password):
         """Create hashed password."""
