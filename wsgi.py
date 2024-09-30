@@ -3,7 +3,6 @@ from flask import Flask
 from flask.cli import with_appcontext, AppGroup
 
 from App.database import db, get_migrate
-from App.models import User
 from App.main import create_app, parse_students, parse_reviews
 from App.controllers import ( create_staff, get_all_staffs_json, get_all_staffs, initialize, add_student, search_student_by_student_id, add_review, initialize )
 from App.controllers.student import ( get_all_students_json, get_all_students, get_student, get_student_reviews, get_student_reviews_json )
