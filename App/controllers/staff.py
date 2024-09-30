@@ -17,7 +17,6 @@ def create_staff(prefix, firstname, lastname, email, is_admin, password, created
         db.session.add(newstaff)
         db.session.commit()
         return newstaff
-    
 
     elif created_by and not created_by.is_admin:
         return None
@@ -47,10 +46,10 @@ def get_all_staffs_json():
     staffs = [staff.get_json() for staff in staffs]
     return staffs
 
-def update_staff(id, staffname):
+def update_staff(id, firstname):
     staff = get_staff(id)
     if staff:
-        staff.staffname = staffname
+        staff.firstname = firstname
         db.session.add(staff)
         return db.session.commit()
     return None

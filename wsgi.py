@@ -6,6 +6,7 @@ from App.database import db, get_migrate
 from App.main import create_app, parse_students, parse_reviews
 from App.controllers import ( create_staff, get_all_staffs_json, get_all_staffs, initialize, add_student, search_student_by_student_id, add_review, initialize )
 from App.controllers.student import ( get_all_students_json, get_all_students, get_student, get_student_reviews, get_student_reviews_json )
+from App.models.staff import Staff
 
 app = create_app()
 migrate = get_migrate(app)
@@ -49,7 +50,13 @@ def create_staff_command(prefix, firstname, lastname, email, is_admin_input, pas
         password = input("Enter Staff Default Password: ")
     if created_by_id is None:
         created_by_id = input("Enter Your Admin ID: ")
-    
+
+    existing_staff = Staff.query.filter_by(email=email).first()
+
+    if existing_staff:
+        print("ERROR: A staff already exists with that email.")
+        return
+
     new_staff = create_staff(prefix, firstname, lastname, email, is_admin, password, created_by_id)
     if new_staff:
         print(f'Staff Account For {prefix + " " + firstname + " " + lastname} Created!')
