@@ -43,63 +43,78 @@ wsgi.py is a utility script for performing various tasks related to the project.
 
 ### Admin Commands
 ```bash
+# Creating a Staff Account (inline)
 $ flask admin create_staff Mrs. Bubble Bub bubble.bub@staff.com N bubblepass 1
 ```
 
 ```bash
+# Creating a Staff Account (interactive input)
 $ flask admin create_staff 
 ```
 
 ```bash
+# List All Staff Accounts
 $ flask admin list_staff 
 ```
 <details>
 <summary>Snippets</summary>
+
 ![Screenshot1](./img/createstaff1.png)
 ![Screenshot2](./img/createstaff2.png)
 ![Screenshot3](./img/liststaff.png)
+
 </details>
 
 
 ### Staff Commands
 ```bash
+# Adding a Student Record (inline)
 $ flask staff add_student 816031000 Bobby Butterbeard bobby.butterbread@mail.com
 ```
 
 ```bash
+# Adding a Student Record (interactive input)
 $ flask staff add_student
 ```
 
 ```bash
+# Adding Multiple Student Records (inline)
 $ flask staff add_students students.csv
 ```
 
 ```bash
+# Adding Multiple Student Records (interactive input)
 $ flask staff add_students
 ```
 
 ```bash
+# Reviewing a Student (inline)
 $ flask staff review 816031000 Overall Good Student 1
 ```
 
 ```bash
+# Reviewing a Student (interactive input)
 $ flask staff review
 ```
 
 ```bash
+# Viewing Student Reviews (inline only)
 $ flask staff view_student_reviews 816031000
 ```
 
 ```bash
+# Search Student (inline only)
 $ flask staff search_student 816031000
 ```
 
 ```bash
+# List All Students
 $ flask staff list_students
 ```
 
 <details>
 <summary>Snippets</summary>
+
 ![Screenshot4](./img/addstudent1.png)
 ![Screenshot5](./img/addstudent2.png)
 ![Screenshot6](./img/addstudents1.png)
@@ -109,6 +124,7 @@ $ flask staff list_students
 ![Screenshot10](./img/studentreview.png)
 ![Screenshot11](./img/search.png)
 ![Screenshot12](./img/liststudents.png)
+
 </details>
 
 # Testing
