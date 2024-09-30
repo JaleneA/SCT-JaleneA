@@ -45,9 +45,9 @@ $ flask admin create_staff
 ![Screenshot2](./img/createstaff2.png)
 
 ```bash
-$ flask admin list_staffs 
+$ flask admin list_staff 
 ```
-![Screenshot3](./img/)
+![Screenshot3](./img/liststaff)
 
 ### Staff Commands
 ```bash
@@ -93,7 +93,7 @@ $ flask staff search_student 816031000
 ```bash
 $ flask staff list_students
 ```
-![Screenshot12](./img/)
+![Screenshot12](./img/liststudents)
 
 # Testing - To Be Implemented
 

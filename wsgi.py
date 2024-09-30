@@ -59,7 +59,7 @@ def create_staff_command(prefix, firstname, lastname, email, is_admin_input, pas
 app.cli.add_command(admin_cli)
 
 # EXTRA #2 - LIST ALL STAFF ACCOUNTS IN DATABASE 
-@admin_cli.command("list_staffs", help="Lists All Staff Account In The Database")
+@admin_cli.command("list_staff", help="Lists All Staff Account In The Database")
 @click.argument("format", default="string")
 def list_staff_command(format):
     if format == 'string':
