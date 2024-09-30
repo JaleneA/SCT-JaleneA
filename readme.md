@@ -146,12 +146,12 @@ $ pytest
 ```
 
 # Error Handling
-✓ Another Staff With The Same Email Cannot Be Created
-✓ Only Admins Can Create Staff Accounts
-✓ Existing Students Import Via CSV Will Be Ignored Upon Later Imports of The Same CSV (With Newly Added Data)
-✓ Cannot Create Another Student With An Already Existing Student ID
-✓ Cannot Review a Student That Doesn't Exist
-✓ Cannot Search a Student That Doesn't Exist
+✓ Another Staff With The Same Email Cannot Be Created<br>
+✓ Only Admins Can Create Staff Accounts<br>
+✓ Existing Students Import Via CSV Will Be Ignored Upon Later Imports of The Same CSV (With Newly Added Data)<br>
+✓ Cannot Create Another Student With An Already Existing Student ID<br>
+✓ Cannot Review a Student That Doesn't Exist<br>
+✓ Cannot Search a Student That Doesn't Exist<br>
 
 
 <details>
