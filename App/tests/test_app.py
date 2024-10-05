@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from App.main import create_app
 from App.database import db, create_db
-from App.models import Staff
+from App.models import Staff, Student, Review
 from App.controllers import (
     create_staff,
     get_all_staffs_json,
@@ -46,6 +46,47 @@ class staffUnitTests(unittest.TestCase):
         password = "johnnypass"
         staff = Staff("Mr.", "Johnny", "Applesauce", "johnny.applesauce@mail.com", "Y", password, "0")
         assert staff.check_password(password)
+
+class StudentUnitTests(unittest.TestCase):
+    def test_new_student(self):
+        student = Student("815678954", "Bib", "Bibbler", "bibble@email")
+        assert student.student_id == "815678954"
+    
+    def test_first_name(self):
+        student = Student("815678954", "Bib", "Bibbler", "bibble@email")
+        assert student.firstname == "Bib"
+
+    def test_last_name(self):
+        student = Student("815678954", "Bib", "Bibbler", "bibble@email")
+        assert student.lastname == "Bibbler"
+
+    def test_email(self):
+        student = Student("815678954", "Bib", "Bibbler", "bibble@email")
+        assert student.email == "bibble@email"
+
+    #def test_get_json(self):
+     #   student = Student("815678954", "Bib", "Bibbler", "bibble@email")
+      #  student_json = student.get_json()
+       # self.assertDictEqual(student_json, {"student_id":"815678954", "firstname":"Bib", "lastname":"Bibbler", "email":"bibble@email"})
+
+class ReviewUnitTests(unittest.TestCase):
+    def test_new_review(self):
+        review = review("Fish to eat", "815678954", "123456789")
+        assert review.student_id == "815678954"
+    
+    def test_review_text(self):
+        review = review("Fish to eat", "815678954", "123456789")
+        assert review.text == "Fish to eat"
+
+    
+    
+    def test_get_json(self):
+        review = review("Fish to eat", "815678954", "123456789")
+        review_json = review.get_json()
+        self.assertDictEqual(review_json, {"student_id":"815678954", "text":"Fish to eat", "reviewer":"mr fish fishinton"})
+
+
+
 
 '''
     Integration Tests
